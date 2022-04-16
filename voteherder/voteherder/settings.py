@@ -43,8 +43,10 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.twitter",
     "rest_framework",
+    "rest_framework_swagger",
     # local apps
     "demo",
+    "counts",
 ]
 
 MIDDLEWARE = [
