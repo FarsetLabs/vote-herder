@@ -22,3 +22,7 @@ sqlparse==0.4.2
 tomli==2.0.1
 typing-extensions==4.1.1
 urllib3==1.26.9
+uk-election-ids==0.4.2
+djangorestframework
+django-filter
+markdown

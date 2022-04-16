@@ -1,0 +1,1 @@
+from pydantic_django import ModelSchema
