@@ -49,7 +49,7 @@ class BasicCandidateTestCases(TestCase):
                                        parent=Election.objects.create(id='nia.2022-05-05'))
 
     def test_can_populate_candidate_data_on_one_ballot(self):
-        ballot = Election.objects.get_or_create(id='nia.belfast-east.2022-05-05')
+        ballot, _ = Election.objects.get_or_create(id='nia.belfast-east.2022-05-05')
         self.assertIsNotNone(ballot.parent)
         ballot_data = ballot.get_data()
 
@@ -70,7 +70,7 @@ class BasicCandidateTestCases(TestCase):
         self.assertGreater(candidate_count, 1)
 
     def test_can_populate_candidate_data_on_one_ballot_internal(self):
-        ballot = Election.objects.get_or_create(id='nia.belfast-east.2022-05-05')
+        ballot, _ = Election.objects.get_or_create(id='nia.belfast-east.2022-05-05')
         ballot.populate_candidates()
         candidate_count = 0
         for candidate in Candidate.objects.all():

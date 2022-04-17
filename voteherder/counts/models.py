@@ -1,10 +1,11 @@
 import requests
+from computed_property import ComputedDateField, ComputedCharField
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 from uk_election_ids import election_ids
 
-from .utils import uuidv6
+from .utils import uuidv6, parse_election_id
 
 
 class Election(models.Model):
@@ -17,7 +18,22 @@ class Election(models.Model):
     """
 
     _id = models.CharField(name='id', primary_key=True, validators=[election_ids.validate], max_length=32)
+    date = ComputedDateField(compute_from='_date')
+    org = ComputedCharField(compute_from='_org', max_length=32)
+    constituency = ComputedCharField(compute_from='_constituency', max_length=32, null=True)
     parent = models.ForeignKey(to='self', on_delete=models.CASCADE, default=None, null=True)
+
+    @property
+    def _date(self):
+        return parse_election_id(self.id)['date']
+
+    @property
+    def _org(self):
+        return parse_election_id(self.id)['org']
+
+    @property
+    def _constituency(self):
+        return parse_election_id(self.id).get('constituency', None)
 
     def get_data(self):
         if self.parent is None:
@@ -49,6 +65,23 @@ class Election(models.Model):
             c.standing.add(self)
             c.save()
 
+    def populate_child_ballots(self):
+        """Build all election from a "root" election"""
+        data = self.get_data()
+        if 'ballots' in data:
+            ballots = []
+            for ballot in data['ballots']:
+                e, created = Election.objects.get_or_create(
+                    id=ballot['ballot_paper_id'],
+                    parent=self
+                )
+
+    def __str__(self):
+        return f'{self.id}'
+
+    class Meta:
+        ordering = ['date', 'org', 'constituency']
+
 
 class Candidate(models.Model):
     """
@@ -66,6 +99,12 @@ class Candidate(models.Model):
 
     def get_data(self):
         return requests.get(f'https://candidates.democracyclub.org.uk/api/next/people/{self.id}/').json()
+
+    def __str__(self):
+        return f'{self.name} ({self.party_name})'
+
+    class Meta:
+        ordering = ['party_name', 'name']
 
 
 class Stage(models.Model):

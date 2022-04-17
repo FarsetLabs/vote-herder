@@ -28,4 +28,4 @@ djangorestframework
 django-rest-swagger
 django-filter
 markdown
-
+django-computed-property
