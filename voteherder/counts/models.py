@@ -17,29 +17,39 @@ class Election(models.Model):
     i.e. Election('nia.belfast-east.2022-05-05', parent=Election.get('nia.2022-05-05'))
     """
 
-    _id = models.CharField(name='id', primary_key=True, validators=[election_ids.validate], max_length=32)
-    date = ComputedDateField(compute_from='_date')
-    org = ComputedCharField(compute_from='_org', max_length=32)
-    constituency = ComputedCharField(compute_from='_constituency', max_length=32, null=True)
-    parent = models.ForeignKey(to='self', on_delete=models.CASCADE, default=None, null=True)
+    _id = models.CharField(
+        name="id", primary_key=True, validators=[election_ids.validate], max_length=32
+    )
+    date = ComputedDateField(compute_from="_date")
+    org = ComputedCharField(compute_from="_org", max_length=32)
+    constituency = ComputedCharField(
+        compute_from="_constituency", max_length=32, null=True
+    )
+    parent = models.ForeignKey(
+        to="self", on_delete=models.CASCADE, default=None, null=True
+    )
 
     @property
     def _date(self):
-        return parse_election_id(self.id)['date']
+        return parse_election_id(self.id)["date"]
 
     @property
     def _org(self):
-        return parse_election_id(self.id)['org']
+        return parse_election_id(self.id)["org"]
 
     @property
     def _constituency(self):
-        return parse_election_id(self.id).get('constituency', None)
+        return parse_election_id(self.id).get("constituency", None)
 
     def get_data(self):
         if self.parent is None:
-            return requests.get(f'https://candidates.democracyclub.org.uk/api/next/elections/{self.id}/').json()
+            return requests.get(
+                f"https://candidates.democracyclub.org.uk/api/next/elections/{self.id}/"
+            ).json()
         else:
-            return requests.get(f'https://candidates.democracyclub.org.uk/api/next/ballots/{self.id}/').json()
+            return requests.get(
+                f"https://candidates.democracyclub.org.uk/api/next/ballots/{self.id}/"
+            ).json()
 
     def build_results_json(self):
         """
@@ -49,18 +59,18 @@ class Election(models.Model):
 
         When you come back to this check this out https://github.com/NICVA/electionsni/blob/master/other/mock/all-counts-create-json.py
         """
-        raise NotImplementedError('#TODO')
+        raise NotImplementedError("#TODO")
 
     def populate_candidates(self):
         """Build / Update all candidates standing in this election"""
         data = self.get_data()
-        for candidate in data['candidacies']:
+        for candidate in data["candidacies"]:
             # Need to do this if we're _adding_ standings rather than bulk_create
             c, created = Candidate.objects.get_or_create(
-                id=candidate['person']['id'],
-                name=candidate['person']['name'],
-                party_id=candidate['party']['ec_id'],
-                party_name=candidate['party']['name'],
+                id=candidate["person"]["id"],
+                name=candidate["person"]["name"],
+                party_id=candidate["party"]["ec_id"],
+                party_name=candidate["party"]["name"],
             )
             c.standing.add(self)
             c.save()
@@ -68,19 +78,18 @@ class Election(models.Model):
     def populate_child_ballots(self):
         """Build all election from a "root" election"""
         data = self.get_data()
-        if 'ballots' in data:
+        if "ballots" in data:
             ballots = []
-            for ballot in data['ballots']:
+            for ballot in data["ballots"]:
                 e, created = Election.objects.get_or_create(
-                    id=ballot['ballot_paper_id'],
-                    parent=self
+                    id=ballot["ballot_paper_id"], parent=self
                 )
 
     def __str__(self):
-        return f'{self.id}'
+        return f"{self.id}"
 
     class Meta:
-        ordering = ['date', 'org', 'constituency']
+        ordering = ["date", "org", "constituency"]
 
 
 class Candidate(models.Model):
@@ -91,30 +100,41 @@ class Candidate(models.Model):
 
     In practice, candidates should _not_ be able to participate twice in a given root/parent election
     """
-    _id = models.IntegerField(name='id', primary_key=True)
+
+    _id = models.IntegerField(name="id", primary_key=True)
     name = models.CharField(max_length=32)
     party_id = models.CharField(max_length=32)
     party_name = models.CharField(max_length=32)
     standing = models.ManyToManyField(Election)
 
     def get_data(self):
-        return requests.get(f'https://candidates.democracyclub.org.uk/api/next/people/{self.id}/').json()
+        return requests.get(
+            f"https://candidates.democracyclub.org.uk/api/next/people/{self.id}/"
+        ).json()
 
     def __str__(self):
-        return f'{self.name} ({self.party_name})'
+        return f"{self.name} ({self.party_name})"
 
     class Meta:
-        ordering = ['party_name', 'name']
+        ordering = ["party_name", "name"]
 
 
 class Stage(models.Model):
     """
     User-generated Stage counts wrapper; this is the primary tracking element for count tracking.
     """
-    _id = models.UUIDField(primary_key=True, default=uuidv6, editable=False, unique=True)
-    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='author')
-    validated_by = models.ForeignKey(to=User, default=None, on_delete=models.SET_NULL, null=True,
-                                     related_name='validated_by')  # Need to validate that user is admin
+
+    _id = models.UUIDField(
+        primary_key=True, default=uuidv6, editable=False, unique=True
+    )
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="author")
+    validated_by = models.ForeignKey(
+        to=User,
+        default=None,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="validated_by",
+    )  # Need to validate that user is admin
     created = models.DateTimeField(auto_now_add=True)
     election = models.ForeignKey(to=Election, on_delete=models.CASCADE)
     count_stage = models.IntegerField()
@@ -122,8 +142,8 @@ class Stage(models.Model):
         default=0.0, validators=[MinValueValidator(0.0)]
     )
     evidence_url = models.URLField(
-        verbose_name='Paste a link to evidence of this count stage (twitter picture/etc)',
-        null=True
+        verbose_name="Paste a link to evidence of this count stage (twitter picture/etc)",
+        null=True,
     )
 
 
@@ -132,7 +152,9 @@ class StageCell(models.Model):
     Representation of a single candidate/stage/count entry
     """
 
-    _id = models.UUIDField(primary_key=True, default=uuidv6, editable=False, unique=True)
+    _id = models.UUIDField(
+        primary_key=True, default=uuidv6, editable=False, unique=True
+    )
     stage = models.ForeignKey(to=Stage, on_delete=models.CASCADE)
     candidate = models.ForeignKey(to=Candidate, on_delete=models.CASCADE)
     ## Counts have to be floats for n>1 stages due to fractional transfers in STV
