@@ -25,10 +25,14 @@ class ElectionSerializer(serializers.HyperlinkedModelSerializer):
 class CandidateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Candidate
-        fields = ["id", "name", "party_name", "standing"]
+        fields = ["url", "id", "name", "party_name"]
+        extra_kwargs = {
+            'url': {'view_name': 'candidate-detail', 'lookup_field': 'id'}
+        }
 
 
 class StageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Stage
         fields = ["url", "election", "count_stage", "author"]
+

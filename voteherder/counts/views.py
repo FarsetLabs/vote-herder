@@ -40,21 +40,19 @@ class GroupViewSet(viewsets.ModelViewSet):
 ### Count Viewsets
 
 
-class ElectionViewSet(viewsets.ModelViewSet):
+class ElectionViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows elections to be viewed or edited.
     """
-
     queryset = Election.objects.all().order_by("-date")
     serializer_class = ElectionSerializer
     permission_classes = [permissions.AllowAny]
 
 
-class CandidateViewSet(viewsets.ModelViewSet):
+class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-
     queryset = Candidate.objects.all().order_by("name")
     serializer_class = CandidateSerializer
     permission_classes = [permissions.AllowAny]
@@ -64,7 +62,6 @@ class StageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-
     queryset = Stage.objects.all().order_by("-created")
     serializer_class = StageSerializer
     permission_classes = [permissions.AllowAny]

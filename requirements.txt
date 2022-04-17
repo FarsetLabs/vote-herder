@@ -29,3 +29,4 @@ django-rest-swagger
 django-filter
 markdown
 django-computed-property
+django-bootstrap4

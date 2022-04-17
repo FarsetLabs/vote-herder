@@ -35,6 +35,7 @@ def get_elections_ni_constituency_count_data(year, constituency):
     url = f"http://electionsni.org/{year}/constituency/{constituency}/Count.csv"
     counts = []
     with closing(requests.get(url, stream=True)) as r:
+        r.raise_for_status()
         reader = csv.DictReader(
             codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",", quotechar='"'
         )
@@ -42,6 +43,17 @@ def get_elections_ni_constituency_count_data(year, constituency):
             counts.append(row)
     return counts
 
+
+def get_alternative_person_id(candidate_id: int):
+    """Sometimes people change. Maybe"""
+    data = requests.get(
+        f"https://candidates.democracyclub.org.uk/api/next/people/{candidate_id}/"
+    ).json()
+
+    if data['id'] != candidate_id:
+        return data['id']
+    else:
+        return None
 
 def uuidv1tov6(u):
     """http://gh.peabody.io/uuidv6/"""

@@ -11,10 +11,6 @@ from .utils import uuidv6, parse_election_id
 class Election(models.Model):
     """
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
-
-    Intended such that 'top level elections' are forward-forward referenced by their grouped-elections
-
-    i.e. Election('nia.belfast-east.2022-05-05', parent=Election.get('nia.2022-05-05'))
     """
 
     _id = models.CharField(
@@ -65,13 +61,18 @@ class Election(models.Model):
         """Build / Update all candidates standing in this election"""
         data = self.get_data()
         for candidate in data["candidacies"]:
+            ## Candidates may change affiliations or names between elections
+            # So get solely on the id first, then do a create
             # Need to do this if we're _adding_ standings rather than bulk_create
-            c, created = Candidate.objects.get_or_create(
-                id=candidate["person"]["id"],
-                name=candidate["person"]["name"],
-                party_id=candidate["party"]["ec_id"],
-                party_name=candidate["party"]["name"],
-            )
+            if Candidate.objects.filter(id=candidate["person"]["id"]).exists():
+                c = Candidate.objects.get(id=candidate["person"]["id"])
+            else:
+                c = Candidate.objects.create(
+                    id=candidate["person"]["id"],
+                    name=candidate["person"]["name"],
+                    party_id=candidate["party"]["ec_id"],
+                    party_name=candidate["party"]["name"],
+                )
             c.standing.add(self)
             c.save()
 
@@ -146,6 +147,9 @@ class Stage(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return f"{self.election.id}-{self.count_stage} @ {self.author}"
+
 
 class StageCell(models.Model):
     """
@@ -159,3 +163,6 @@ class StageCell(models.Model):
     candidate = models.ForeignKey(to=Candidate, on_delete=models.CASCADE)
     ## Counts have to be floats for n>1 stages due to fractional transfers in STV
     count = models.FloatField(validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return f"{self.count} for {self.candidate} in {self.stage}"

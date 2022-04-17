@@ -114,7 +114,7 @@ class RetroactiveCountStageParsing(TestCase):
                 stage = Stage.objects.create(
                     count_stage=new_stage, election=ballot, author=self._author
                 )
-            candidate = Candidate.objects.get(id=int(count_row["Candidate_Id"]))
+            candidate, _ = Candidate.objects.get_or_create(id=int(count_row["Candidate_Id"]))
             # This assumption is broken because the 'Conservative and Unionist Party' changed their names a few times
             # self.assertEqual(candidate.party_name, count_row['Party_Name'])
             self.assert_(
