@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "bootstrap4",
     "rest_framework",
     "rest_framework_swagger",
+    "django_tables2",
     # local apps
     "demo",
     "counts",
@@ -66,7 +67,7 @@ ROOT_URLCONF = "voteherder.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [(os.path.join(BASE_DIR, 'templates')), ],
+        "DIRS": [(os.path.join(BASE_DIR, 'voteherder/templates')), ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -80,8 +81,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "voteherder.wsgi.application"
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
 
+WSGI_APPLICATION = "voteherder.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

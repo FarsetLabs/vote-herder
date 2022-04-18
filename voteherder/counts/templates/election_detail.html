@@ -1,0 +1,14 @@
+<!-- pages/templates/about.html -->
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <h1>{{ election }}</h1>
+    {% if election.parent is None %}
+        <h2>Ballots</h2>
+        {% render_table children %}
+    {% endif %}
+    {% if stages %}
+        <h2>Stages</h2>
+        {% render_table stages %}
+    {% endif %}
+{% endblock content %}

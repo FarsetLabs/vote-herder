@@ -8,6 +8,12 @@ from uk_election_ids import election_ids
 from .utils import uuidv6, parse_election_id
 
 
+class Constituency(models.Model):
+    """
+    System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
+    """
+
+
 class Election(models.Model):
     """
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation

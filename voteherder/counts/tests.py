@@ -1,19 +1,13 @@
-import difflib
-
 import requests_cache
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from .models import Election, Candidate, Stage, StageCell
-from .utils import parse_election_id, get_elections_ni_constituency_count_data
+from .utils import parse_election_id, get_elections_ni_constituency_count_data, is_close_enough
 
 # Create your tests here.
 
 requests_cache.install_cache(expire_after=3600, allowable_methods=("GET",))
-
-
-def is_close_enough(a, b, limit=0.85):
-    return difflib.SequenceMatcher(a=a, b=b).ratio() > limit
 
 
 class BasicElectionTestCase(TestCase):

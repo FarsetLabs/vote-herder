@@ -1,6 +1,7 @@
 import codecs
 import csv
 import datetime
+import difflib
 import uuid
 from contextlib import closing
 
@@ -55,6 +56,7 @@ def get_alternative_person_id(candidate_id: int):
     else:
         return None
 
+
 def uuidv1tov6(u):
     """http://gh.peabody.io/uuidv6/"""
     uh = u.hex
@@ -69,3 +71,7 @@ def uuidv1tov6(u):
 
 def uuidv6():
     return uuidv1tov6(uuid.uuid1())
+
+
+def is_close_enough(a, b, limit=0.80):
+    return difflib.SequenceMatcher(a=a, b=b).ratio() > limit

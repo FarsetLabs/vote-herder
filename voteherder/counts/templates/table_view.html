@@ -1,0 +1,7 @@
+<!-- pages/templates/about.html -->
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% render_table object_list %}
+{% endblock content %}

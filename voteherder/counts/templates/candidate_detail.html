@@ -1,0 +1,12 @@
+<!-- pages/templates/about.html -->
+{% extends 'base.html' %}
+{% load render_table from django_tables2 %}
+{% block content %}
+    <h1>{{ candidate.name }}</h1>
+    {{ candidate.party_name }}
+    <h2>Standings</h2>
+    {% render_table candidate.standing.all %}
+    <h2>More Detail</h2>
+    <a href="https://candidates.democracyclub.org.uk/person/{{ candidate.id }}/">More about {{ candidate.name }} from
+        Democracy Club</a>
+{% endblock content %}
