@@ -44,10 +44,11 @@ class ElectionViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows elections to be viewed or edited.
     """
+    lookup_field = 'id'
+    lookup_value_regex = '[^/]+'
     queryset = Election.objects.all().order_by("-date")
     serializer_class = ElectionSerializer
     permission_classes = [permissions.AllowAny]
-
 
 class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -62,11 +63,12 @@ class StageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    lookup_field = '_id'
     queryset = Stage.objects.all().order_by("-created")
     serializer_class = StageSerializer
     permission_classes = [permissions.AllowAny]
 
-
+ 
 ### Entity List Views
 
 class ElectionListView(ListView):
