@@ -31,7 +31,7 @@ urlpatterns = [
     path("about/", TemplateView.as_view(template_name="about.html"), name='about'),
     path("election/", ElectionListView.as_view(), name='election'),
     path("election/<str:pk>", ElectionDetailView.as_view(), name='election-detail'),
-    path("candidate/", CandidateListView.as_view(), name='election'),
+    path("candidate/", CandidateListView.as_view(), name='candidate'),
     path("candidate/<int:pk>", CandidateDetailView.as_view(), name='candidate-detail'),
     path("stage/<uuid:pk>", StageDetailView.as_view(), name='stage-detail'),
     path("api/v1/", include(api_router.urls)),
