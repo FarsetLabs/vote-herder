@@ -6,17 +6,26 @@ import uuid
 from contextlib import closing
 
 import requests
+from uk_election_ids import election_ids
 
 
-def parse_election_id(election_id):
+def parse_election_id(election_id, slug=False):
     """
     >>> parse_election_id('nia.belfast-east.2022-05-05')['date'].year
     2022
 
     >>> parse_election_id('nia.2022-05-05')['date'].year
     2022
+
+    >>> parse_election_id('nia_2022-05-05', slug=True)['date'].year
+    2022
+
     """
-    parts = election_id.split(".")
+    if slug:
+        parts = election_id.split("_")
+    else:
+        parts = election_id.split(".")
+
     if len(parts) == 2:
         return {"org": parts[0], "date": datetime.date(*map(int, parts[1].split("-")))}
     elif len(parts) == 3:
@@ -51,8 +60,8 @@ def get_alternative_person_id(candidate_id: int):
         f"https://candidates.democracyclub.org.uk/api/next/people/{candidate_id}/"
     ).json()
 
-    if data['id'] != candidate_id:
-        return data['id']
+    if data["id"] != candidate_id:
+        return data["id"]
     else:
         return None
 
@@ -75,3 +84,10 @@ def uuidv6():
 
 def is_close_enough(a, b, limit=0.80):
     return difflib.SequenceMatcher(a=a, b=b).ratio() > limit
+
+
+def terrible_validator(eid):
+    """
+    I HATE THIS I HATE THIS I HATE THIS
+    """
+    return election_ids.validate(eid.replace("_", "."))

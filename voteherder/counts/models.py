@@ -8,12 +8,6 @@ from uk_election_ids import election_ids
 from .utils import uuidv6, parse_election_id
 
 
-class Constituency(models.Model):
-    """
-    System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
-    """
-
-
 class Election(models.Model):
     """
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
@@ -66,6 +60,10 @@ class Election(models.Model):
     def populate_candidates(self):
         """Build / Update all candidates standing in this election"""
         data = self.get_data()
+        if "candidacies" not in data:
+            raise RuntimeError(
+                "This looks more like an election group than a ballot; it has no candidacies"
+            )
         for candidate in data["candidacies"]:
             ## Candidates may change affiliations or names between elections
             # So get solely on the id first, then do a create

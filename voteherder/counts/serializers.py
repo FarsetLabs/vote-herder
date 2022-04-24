@@ -19,20 +19,21 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ElectionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Election
-        fields = ["url", "id", "org", "date", "constituency", "parent"]
+        # Removing the 'url' from below stops the ImproperlyConfigured error
+        fields = ["url", "org", "date", "constituency", "parent"]
+        read_only_fields = ["url"]
+        depth = 1
 
 
 class CandidateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Candidate
         fields = ["url", "id", "name", "party_name"]
-        extra_kwargs = {
-            'url': {'view_name': 'candidate-detail', 'lookup_field': 'id'}
-        }
+        depth = 1
 
 
 class StageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Stage
         fields = ["url", "election", "count_stage", "author"]
-
+        depth = 1

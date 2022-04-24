@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_swagger",
     "django_tables2",
+    "django_extensions",
     # local apps
     "demo",
     "counts",
@@ -67,7 +68,9 @@ ROOT_URLCONF = "voteherder.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [(os.path.join(BASE_DIR, 'voteherder/templates')), ],
+        "DIRS": [
+            (os.path.join(BASE_DIR, "voteherder/templates")),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -149,7 +152,7 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 LOGIN_REDIRECT_URL = "demo:demo"
 
-BOOTSTRAP4 = {'include_jquery': True}
+BOOTSTRAP4 = {"include_jquery": True}
 
 # REST framework configuration
 REST_FRAMEWORK = {

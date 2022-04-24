@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from .models import Election, Candidate, Stage, StageCell
-from .utils import parse_election_id, get_elections_ni_constituency_count_data, is_close_enough
+from .utils import (
+    parse_election_id,
+    get_elections_ni_constituency_count_data,
+    is_close_enough,
+)
 
 # Create your tests here.
 
@@ -108,7 +112,9 @@ class RetroactiveCountStageParsing(TestCase):
                 stage = Stage.objects.create(
                     count_stage=new_stage, election=ballot, author=self._author
                 )
-            candidate, _ = Candidate.objects.get_or_create(id=int(count_row["Candidate_Id"]))
+            candidate, _ = Candidate.objects.get_or_create(
+                id=int(count_row["Candidate_Id"])
+            )
             # This assumption is broken because the 'Conservative and Unionist Party' changed their names a few times
             # self.assertEqual(candidate.party_name, count_row['Party_Name'])
             self.assert_(
