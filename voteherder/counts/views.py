@@ -5,13 +5,14 @@ from django.views.generic import ListView, DetailView
 from rest_framework import permissions
 from rest_framework import viewsets
 
-from .models import Election, Candidate, Stage, StageCell
+from .models import Election, Candidate, Stage, StageCell, Ballot
 from .serializers import (
     UserSerializer,
     GroupSerializer,
     ElectionSerializer,
     CandidateSerializer,
     StageSerializer,
+    BallotSerializer,
 )
 
 
@@ -53,6 +54,16 @@ class ElectionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ElectionSerializer
     permission_classes = [permissions.AllowAny]
 
+class BallotViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows elections to be viewed or edited.
+    """
+
+    lookup_field = "id"
+    lookup_value_regex = "[a-z0-9.\-_]+"
+    queryset = Ballot.objects.all().order_by("-date")
+    serializer_class = BallotSerializer
+    permission_classes = [permissions.AllowAny]
 
 class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -86,6 +97,14 @@ class ElectionListView(ListView):
         context["title"] = "Elections"
         return context
 
+class BallotListView(ListView):
+    model = Ballot
+    template_name = "table_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Ballots"
+        return context
 
 class CandidateListView(ListView):
     model = Candidate
@@ -106,8 +125,16 @@ class ElectionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["children"] = Election.objects.filter(parent=self.object)
-        context["stages"] = Stage.objects.filter(election=self.object)
+        context["ballots"] = Ballot.objects.filter(parent=self.object)
+        return context
+
+class BallotDetailView(DetailView):
+    model = Ballot
+    template_name = "election_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["stages"] = Stage.objects.filter(ballot=self.object)
         return context
 
 

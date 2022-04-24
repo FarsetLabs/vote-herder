@@ -1,7 +1,7 @@
 import difflib
 from operator import itemgetter
 
-from counts.models import Election, Candidate, Stage, StageCell
+from counts.models import Election, Ballot, Candidate, Stage, StageCell
 from counts.utils import (
     parse_election_id,
     get_elections_ni_constituency_count_data,
@@ -39,16 +39,16 @@ class Command(BaseCommand):
         data = election.get_data()
         if "ballots" in data:
             ballots = []
-            for ballot in data["ballots"]:
-                e, created = Election.objects.get_or_create(
-                    id=ballot["ballot_paper_id"], parent=election
+            for ballot_data in data["ballots"]:
+                ballot, created = Ballot.objects.get_or_create(
+                    id=ballot_data["ballot_paper_id"], election=election
                 )
                 if created:
                     self.stdout.write(
-                        f"new election, {e.id} created as part of {election_id}"
+                        f"new ballot, {ballot.id} created as part of {election_id}"
                     )
-                e.populate_candidates()
-                ballot_desc = parse_election_id(e.id)
+                ballot.populate_candidates()
+                ballot_desc = parse_election_id(ballot.id)
 
                 if ballot_desc["constituency"] in constituency_fixes:
                     count_data = get_elections_ni_constituency_count_data(
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                             stage_number = new_stage
                             stage = Stage.objects.create(
                                 count_stage=new_stage,
-                                election=e,
+                                ballot=ballot,
                                 author=User.objects.get(username="admin"),
                                 validated_by=User.objects.get(username="admin"),
                             )
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                                             a=c.name.lower(), b=candidate_name.lower()
                                         ).ratio(),
                                     )
-                                    for c in Candidate.objects.filter(standing__in=[e])
+                                    for c in Candidate.objects.filter(standing__in=[ballot])
                                 ],
                                 key=itemgetter(1),
                             )[-1]

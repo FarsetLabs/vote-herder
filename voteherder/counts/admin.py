@@ -2,9 +2,9 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 
-from .models import Election, Candidate, Stage, StageCell
+from .models import Election, Ballot, Candidate, Stage, StageCell
 
-admin.site.register([Election, Candidate, StageCell])
+admin.site.register([Election, Ballot, Candidate, StageCell])
 
 
 @admin.action(description="Mark selected stages as validated")
@@ -13,8 +13,8 @@ def validate_stage(modeladmin, request, queryset):
 
 
 class StageAdmin(admin.ModelAdmin):
-    list_display = ["election", "count_stage", "author", "created"]
-    ordering = ["election", "count_stage", "author", "created"]
+    list_display = ["ballot", "count_stage", "author", "created"]
+    ordering = ["ballot", "count_stage", "author", "created"]
     actions = [validate_stage]
 
     def get_form(self, request, obj=None, **kwargs):

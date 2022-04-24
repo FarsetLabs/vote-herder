@@ -1,4 +1,4 @@
-from counts.models import Election
+from counts.models import Election, Ballot
 from django.core.management.base import BaseCommand, CommandError
 from uk_election_ids.election_ids import validate
 
@@ -22,8 +22,8 @@ class Command(BaseCommand):
         if "ballots" in data:
             ballots = []
             for ballot in data["ballots"]:
-                e, created = Election.objects.get_or_create(
-                    id=ballot["ballot_paper_id"], parent=election
+                e, created = Ballot.objects.get_or_create(
+                    id=ballot["ballot_paper_id"], election=election
                 )
                 if created:
                     self.stdout.write(

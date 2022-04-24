@@ -18,13 +18,63 @@ class Election(models.Model):
     )
     date = ComputedDateField(compute_from="_date")
     org = ComputedCharField(compute_from="_org", max_length=32)
+
+    @property
+    def _date(self):
+        return parse_election_id(self.id)["date"]
+
+    @property
+    def _org(self):
+        return parse_election_id(self.id)["org"]
+
+    def get_data(self):
+        return requests.get(
+            f"https://candidates.democracyclub.org.uk/api/next/elections/{self.id}/"
+        ).json()
+
+    def build_results_json(self):
+        """
+        https://github.com/NICVA/electionsni/blob/master/2017/constituency/belfast-east/ResultsJson.json
+        Used to power the Stages animations in here https://github.com/NICVA/electionsni/blob/master/website/js/stages.js
+
+
+        When you come back to this check this out https://github.com/NICVA/electionsni/blob/master/other/mock/all-counts-create-json.py
+        """
+        raise NotImplementedError("#TODO")
+
+    def populate_child_ballots(self):
+        """Build all election from a "root" election"""
+        data = self.get_data()
+        if "ballots" in data:
+            ballots = []
+            for ballot in data["ballots"]:
+                e, created = Ballot.objects.get_or_create(
+                    id=ballot["ballot_paper_id"], election=self
+                )
+
+    def __str__(self):
+        return f"{self.id}"
+
+    class Meta:
+        ordering = ["date", "org"]
+
+
+class Ballot(models.Model):
+    """
+    System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
+    """
+    _id = models.CharField(
+        name="id", primary_key=True, validators=[election_ids.validate], max_length=32
+    )
+    date = ComputedDateField(compute_from="_date")
+    org = ComputedCharField(compute_from="_org", max_length=32)
+
     constituency = ComputedCharField(
         compute_from="_constituency", max_length=32, null=True
     )
-    parent = models.ForeignKey(
-        to="self", on_delete=models.CASCADE, default=None, null=True
+    election = models.ForeignKey(
+        to=Election, on_delete=models.CASCADE, default=None, null=True
     )
-
     @property
     def _date(self):
         return parse_election_id(self.id)["date"]
@@ -38,32 +88,13 @@ class Election(models.Model):
         return parse_election_id(self.id).get("constituency", None)
 
     def get_data(self):
-        if self.parent is None:
-            return requests.get(
-                f"https://candidates.democracyclub.org.uk/api/next/elections/{self.id}/"
-            ).json()
-        else:
-            return requests.get(
-                f"https://candidates.democracyclub.org.uk/api/next/ballots/{self.id}/"
-            ).json()
-
-    def build_results_json(self):
-        """
-        https://github.com/NICVA/electionsni/blob/master/2017/constituency/belfast-east/ResultsJson.json
-        Used to power the Stages animations in here https://github.com/NICVA/electionsni/blob/master/website/js/stages.js
-
-
-        When you come back to this check this out https://github.com/NICVA/electionsni/blob/master/other/mock/all-counts-create-json.py
-        """
-        raise NotImplementedError("#TODO")
+        return requests.get(
+            f"https://candidates.democracyclub.org.uk/api/next/ballots/{self.id}/"
+        ).json()
 
     def populate_candidates(self):
         """Build / Update all candidates standing in this election"""
         data = self.get_data()
-        if "candidacies" not in data:
-            raise RuntimeError(
-                "This looks more like an election group than a ballot; it has no candidacies"
-            )
         for candidate in data["candidacies"]:
             ## Candidates may change affiliations or names between elections
             # So get solely on the id first, then do a create
@@ -80,22 +111,8 @@ class Election(models.Model):
             c.standing.add(self)
             c.save()
 
-    def populate_child_ballots(self):
-        """Build all election from a "root" election"""
-        data = self.get_data()
-        if "ballots" in data:
-            ballots = []
-            for ballot in data["ballots"]:
-                e, created = Election.objects.get_or_create(
-                    id=ballot["ballot_paper_id"], parent=self
-                )
-
-    def __str__(self):
-        return f"{self.id}"
-
     class Meta:
         ordering = ["date", "org", "constituency"]
-
 
 class Candidate(models.Model):
     """
@@ -110,7 +127,7 @@ class Candidate(models.Model):
     name = models.CharField(max_length=32)
     party_id = models.CharField(max_length=32)
     party_name = models.CharField(max_length=32)
-    standing = models.ManyToManyField(Election)
+    standing = models.ManyToManyField(Ballot)
 
     def get_data(self):
         return requests.get(
@@ -141,7 +158,7 @@ class Stage(models.Model):
         related_name="validated_by",
     )  # Need to validate that user is admin
     created = models.DateTimeField(auto_now_add=True)
-    election = models.ForeignKey(to=Election, on_delete=models.CASCADE)
+    ballot = models.ForeignKey(to=Ballot, on_delete=models.CASCADE)
     count_stage = models.IntegerField()
     non_transferable = models.FloatField(
         default=0.0, validators=[MinValueValidator(0.0)]
@@ -152,7 +169,7 @@ class Stage(models.Model):
     )
 
     def __str__(self):
-        return f"{self.election.id}-{self.count_stage} @ {self.author}"
+        return f"{self.ballot.id}-{self.count_stage} @ {self.author}"
 
 
 class StageCell(models.Model):

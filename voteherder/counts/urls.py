@@ -12,7 +12,7 @@ from .views import (
     ElectionDetailView,
     CandidateListView,
     CandidateDetailView,
-    StageDetailView,
+    StageDetailView, BallotViewSet,
 )
 
 app_name = "counts"
@@ -21,6 +21,7 @@ api_router = routers.DefaultRouter()
 api_router.register(r"users", UserViewSet, "users")
 api_router.register(r"groups", GroupViewSet, "groups")
 api_router.register(r"elections", ElectionViewSet, "elections")
+api_router.register(r"ballots", BallotViewSet, "ballots")
 api_router.register(r"candidates", CandidateViewSet, "candidates")
 api_router.register(r"stages", StageViewSet, "stages")
 

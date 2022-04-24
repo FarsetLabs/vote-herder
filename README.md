@@ -15,6 +15,17 @@ Slightly Easier than Herding Cats.
 
 ## Getting started
 
+### Clean migrations
+
+``` 
+python manage.py makemigrations counts
+python manage.py migrate    
+```
+
+### Create a local superadmin
+
+`python manage.py createsuperuser --username admin --email admin@voteherder.org`
+
 ### Previous Northern Ireland Elections covered by [ElectionsNI](http://www.electionsni.org/data/)
 
 A management command is provided for importing existing election data into the data set.
@@ -49,7 +60,3 @@ divisions (areas, currently called posts).
 A person can stand in more than one election, that is, they can have many candidacies on different ballots.
 
 Ballots make up the main structure of the data, with each ballot being grouped by elections or divisions.
-
-Apart from the base data model, there are two other concepts in this API.
-
-Firstly, the data will change over time, from a ballot being announced through to results being entered.

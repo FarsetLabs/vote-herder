@@ -1,39 +1,45 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from .models import Election, Candidate, Stage
+from .models import Election, Candidate, Stage, Ballot
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["url", "username", "email", "groups"]
+        fields = ["username", "email", "groups"]
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ["url", "name"]
+        fields = ["name"]
 
 
-class ElectionSerializer(serializers.HyperlinkedModelSerializer):
+class BallotSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Election
+        model = Ballot
         # Removing the 'url' from below stops the ImproperlyConfigured error
-        fields = ["url", "org", "date", "constituency", "parent"]
+        fields = ["id","date", "org", "constituency", "election"]
         read_only_fields = ["url"]
         depth = 1
 
+class ElectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Election
+        # Removing the 'url' from below stops the ImproperlyConfigured error
+        fields = ["id","date", "org", "ballot_set"]
+        depth = 1
 
-class CandidateSerializer(serializers.HyperlinkedModelSerializer):
+class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Candidate
-        fields = ["url", "id", "name", "party_name"]
+        fields = ["id", "name", "party_name"]
         depth = 1
 
 
-class StageSerializer(serializers.HyperlinkedModelSerializer):
+class StageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stage
-        fields = ["url", "election", "count_stage", "author"]
+        fields = ["ballot", "count_stage", "author"]
         depth = 1
