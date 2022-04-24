@@ -37,22 +37,18 @@ def parse_election_id(election_id, slug=False):
     else:
         raise ValueError(f"Could not parse {election_id} as an election id slug")
 
-
-def get_elections_ni_constituency_count_data(year, constituency):
+def get_elections_ni_constituency_data(year, constituency, filename):
     """eg http://electionsni.org/2017/constituency/belfast-east/Count.csv
     Streaming solution from https://stackoverflow.com/a/38677650/252556
     """
-    url = f"http://electionsni.org/{year}/constituency/{constituency}/Count.csv"
+    url = f"http://electionsni.org/{year}/constituency/{constituency}/{filename}.csv"
     counts = []
     with closing(requests.get(url, stream=True)) as r:
         r.raise_for_status()
         reader = csv.DictReader(
             codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",", quotechar='"'
         )
-        for row in reader:
-            counts.append(row)
-    return counts
-
+        yield from reader
 
 def get_alternative_person_id(candidate_id: int):
     """Sometimes people change. Maybe"""

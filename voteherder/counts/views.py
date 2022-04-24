@@ -130,7 +130,7 @@ class ElectionDetailView(DetailView):
 
 class BallotDetailView(DetailView):
     model = Ballot
-    template_name = "election_detail.html"
+    template_name = "ballot_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

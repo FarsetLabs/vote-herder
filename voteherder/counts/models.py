@@ -75,6 +75,9 @@ class Ballot(models.Model):
     election = models.ForeignKey(
         to=Election, on_delete=models.CASCADE, default=None, null=True
     )
+    quota = models.IntegerField(
+        null=True, default=None
+    )
     @property
     def _date(self):
         return parse_election_id(self.id)["date"]
