@@ -78,6 +78,7 @@ class Ballot(models.Model):
     quota = models.IntegerField(
         null=True, default=None
     )
+
     @property
     def _date(self):
         return parse_election_id(self.id)["date"]
@@ -114,6 +115,9 @@ class Ballot(models.Model):
             c.standing.add(self)
             c.save()
 
+    def __str__(self):
+        return f"{self.id}"
+
     class Meta:
         ordering = ["date", "org", "constituency"]
 
@@ -133,9 +137,11 @@ class Candidate(models.Model):
     standing = models.ManyToManyField(Ballot)
 
     def get_data(self):
-        return requests.get(
-            f"https://candidates.democracyclub.org.uk/api/next/people/{self.id}/"
-        ).json()
+        return requests.get(self.democracy_club_url).json()
+
+    @property
+    def democracy_club_url(self):
+        return f"https://candidates.democracyclub.org.uk/api/next/people/{self.id}/"
 
     def __str__(self):
         return f"{self.name} ({self.party_name})"

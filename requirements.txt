@@ -32,3 +32,4 @@ django-computed-property
 django-bootstrap4
 django-tables2
 django_extensions
+drf-yasg

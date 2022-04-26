@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework_swagger",
     "django_tables2",
     "django_extensions",
+    "drf_yasg",
     # local apps
     "demo",
     "counts",
