@@ -177,8 +177,12 @@ class Stage(models.Model):
         null=True,
     )
 
+    def get_counts(stage):
+        return {sc.candidate: sc.count for sc in StageCell.objects.filter(stage=stage)}
+
     def __str__(self):
         return f"{self.ballot.id}-{self.count_stage} @ {self.author}"
+
 
 
 class StageCell(models.Model):

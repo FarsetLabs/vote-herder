@@ -82,7 +82,8 @@ class Command(BaseCommand):
 
                 constituency_counts = next(constituency_data)
 
-                ballot.quota=constituency_counts['Quota']
+                ballot.quota = constituency_counts['Quota']
+
                 ballot.save()
 
                 self.stderr.write(f'Got {transfers}')
