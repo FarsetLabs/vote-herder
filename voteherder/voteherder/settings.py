@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,8 +43,15 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.twitter",
+    "bootstrap4",
+    "rest_framework",
+    "rest_framework_swagger",
+    "django_tables2",
+    "django_extensions",
+    "drf_yasg",
     # local apps
     "demo",
+    "counts",
 ]
 
 MIDDLEWARE = [
@@ -61,7 +69,9 @@ ROOT_URLCONF = "voteherder.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [
+            (os.path.join(BASE_DIR, "voteherder/templates")),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -75,8 +85,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "voteherder.wsgi.application"
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
 
+WSGI_APPLICATION = "voteherder.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -141,3 +152,16 @@ CSRF_TRUSTED_ORIGINS = []
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 LOGIN_REDIRECT_URL = "demo:demo"
+
+BOOTSTRAP4 = {"include_jquery": True}
+
+# REST framework configuration
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
