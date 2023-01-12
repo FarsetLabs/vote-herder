@@ -3,6 +3,7 @@ Slightly Easier than Herding Cats.
 
 ## Registered Domains
 
+* electionsni.org
 * voteherder.com
 * voteherder.org
 
@@ -18,13 +19,13 @@ Slightly Easier than Herding Cats.
 ### Clean migrations
 
 ``` 
-python manage.py makemigrations counts
-python manage.py migrate    
+python voteherder/manage.py makemigrations counts
+python voteherder/manage.py migrate    
 ```
 
 ### Create a local superadmin
 
-`python manage.py createsuperuser --username admin --email admin@voteherder.org`
+`python voteherder/manage.py createsuperuser --username admin --email admin@voteherder.org`
 
 ### Previous Northern Ireland Elections covered by [ElectionsNI](http://www.electionsni.org/data/)
 
@@ -39,16 +40,23 @@ count data. There are currently two 'matching' heuristics in place for 'historic
 
 ** THIS WILL DROP ALL BALLOTS/STAGE/STAGECELL DATA FOR THE SPECIFIED CONTEST **
 
-`python manage.py populate_nia_count nia.2017-03-02`
+`python voteherder/manage.py populate_nia_count nia.2017-03-02`
 
 For a lazy copy-paste job, here you go;
 
 ```
-python manage.py populate_nia_count nia.2017-03-02
-python manage.py populate_nia_count nia.2016-05-05
+python voteherder/manage.py populate_nia_count nia.2017-03-02
+python voteherder/manage.py populate_nia_count nia.2016-05-05
 ```
 
 **2011 doesn't exist, see [here](https://twitter.com/Bolster/status/1516117518984826881)**
+
+### Actually running a service
+
+```python voteherder/manage.py runserver```
+
+Then go [here](http://127.0.0.1:8000/api/v1/elections/) to see a list of imported ballots, or [here](127.0.0.1:8000/swagger/) to drop into the swagger ui
+
 
 ## High level concepts
 
