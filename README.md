@@ -55,7 +55,7 @@ python voteherder/manage.py populate_nia_count nia.2016-05-05
 
 ```python voteherder/manage.py runserver```
 
-Then go [here](http://127.0.0.1:8000/api/v1/elections/) to see a list of imported ballots, or [here](127.0.0.1:8000/swagger/) to drop into the swagger ui
+Then go [here](http://127.0.0.1:8000/api/v1/elections/) to see a list of imported ballots, or [here](http://127.0.0.1:8000/swagger/) to drop into the swagger ui
 
 
 ## High level concepts
