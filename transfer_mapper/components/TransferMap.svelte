@@ -7,17 +7,43 @@
     { candidate: "Susan", votes: 4000 },
   ];
 
-  const quota = 5000;
+  const votes_data = {
+    quota: 4000,
+    consituency: "Belfast East",
+    stages: [
+      {
+        stage: 1,
+        candidate_count: [
+          { candidate: "Tony", votes: 6000 },
+          { candidate: "Barbara", votes: 2000 },
+          { candidate: "Susan", votes: 2700 },
+        ],
+      },
+      {
+        stage: 2,
+        candidate_count: [
+          { candidate: "Tony", votes: 4000 },
+          { candidate: "Barbara", votes: 2400 },
+          { candidate: "Susan", votes: 4100 },
+        ],
+      },
+      {
+        stage: 3,
+        candidate_count: [
+          { candidate: "Tony", votes: 4000 },
+          { candidate: "Barbara", votes: 0 },
+          { candidate: "Susan", votes: 5400 },
+        ],
+      },
+    ],
+  };
 
   const yTicks = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000];
   const padding = { top: 20, right: 15, bottom: 20, left: 25 };
 
   let width = 500;
   let height = 200;
-
-  function formatMobile(tick) {
-    return "'" + tick.toString().slice(-2);
-  }
+  let stage = 1;
 
   $: xScale = scaleLinear()
     .domain([0, stageone.length])
@@ -29,9 +55,23 @@
 
   $: innerWidth = width - (padding.left + padding.right);
   $: barWidth = innerWidth / stageone.length;
+  $: votes = votes_data.stages[stage - 1].candidate_count;
+  
+  function onStageChoiceChange(event) {
+    stage = event.currentTarget.value;
+  }
 </script>
 
-<h2>US birthrate by candidate</h2>
+<h2>{votes_data.consituency}</h2>
+
+<div>
+    {#each votes_data.stages as stage}
+        <label>
+            <input type="radio" name="stage" value="{stage.stage}" on:change={onStageChoiceChange} checked/>
+            Stage {stage.stage}
+        </label>
+    {/each}
+</div>
 
 <div class="chart" bind:clientWidth={width} bind:clientHeight={height}>
   <svg>
@@ -48,19 +88,15 @@
 
     <!-- x axis -->
     <g class="axis x-axis">
-      {#each stageone as point, i}
+      {#each votes as point, i}
         <g class="tick" transform="translate({xScale(i)},{height})">
-          <text x={barWidth / 2} y="-4"
-            >{width > 380
-              ? point.candidate
-              : formatMobile(point.candidate)}</text
-          >
+          <text x={barWidth / 2} y="-4">{point.candidate}</text>
         </g>
       {/each}
     </g>
 
     <g class="bars">
-      {#each stageone as point, i}
+      {#each votes as point, i}
         <rect
           x={xScale(i) + 2}
           y={yScale(point.votes)}
@@ -72,11 +108,12 @@
 
     <!-- quota line -->
     <g>
-      <line class="quota-line"
+      <line
+        class="quota-line"
         x1={padding.left}
-        y1={yScale(quota)}
+        y1={yScale(votes_data.quota)}
         x2={width + padding.right}
-        y2={yScale(quota)}
+        y2={yScale(votes_data.quota)}
         stroke="black"
         stroke-dasharray="2"
       />
@@ -112,7 +149,6 @@
     stroke-width: 2;
     stroke-dasharray: 10;
     opacity: 0.5;
-
   }
 
   .tick line {
