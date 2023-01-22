@@ -1,0 +1,21 @@
+{
+    "quota": 150,
+    "constituency": "East Belfast",
+    "stage_counts": [
+        {
+            "barbara": 173,
+            "john": 123,
+            "sarah": 45
+        },
+        {
+            "barbara": 150,
+            "john": 142,
+            "sarah": 60
+        },
+        {
+            "barbara": 150,
+            "john": 189,
+            "sarah": 0
+        }
+    ]
+}
