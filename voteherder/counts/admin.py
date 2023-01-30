@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 from .models import Election, Ballot, Candidate, Stage, StageCell
 
 admin.site.register([Election, Ballot, Candidate, StageCell])
-admin.site.site_header  =  "VoteHerder Administration"
-admin.site.site_title  =  "VoteHerder Admin Site"
-admin.site.index_title  =  "VoteHerder Management Portal"
+admin.site.site_header = "VoteHerder Administration"
+admin.site.site_title = "VoteHerder Admin Site"
+admin.site.index_title = "VoteHerder Management Portal"
+
 
 @admin.action(description="Mark selected stages as validated")
 def validate_stage(modeladmin, request, queryset):

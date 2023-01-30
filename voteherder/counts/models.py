@@ -13,8 +13,10 @@ class Election(models.Model):
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
     """
 
-    _id = models.CharField(
-        name="id", primary_key=True, validators=[election_ids.validate], max_length=32
+    id = models.CharField(
+        primary_key=True,
+        validators=[election_ids.validate],
+        max_length=32,
     )
     date = ComputedDateField(compute_from="_date")
     org = ComputedCharField(compute_from="_org", max_length=32)
@@ -63,8 +65,11 @@ class Ballot(models.Model):
     """
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
     """
-    _id = models.CharField(
-        name="id", primary_key=True, validators=[election_ids.validate], max_length=32
+
+    id = models.CharField(
+        primary_key=True,
+        validators=[election_ids.validate],
+        max_length=128,
     )
     date = ComputedDateField(compute_from="_date")
     org = ComputedCharField(compute_from="_org", max_length=32)
@@ -75,9 +80,7 @@ class Ballot(models.Model):
     election = models.ForeignKey(
         to=Election, on_delete=models.CASCADE, default=None, null=True
     )
-    quota = models.IntegerField(
-        null=True, default=None
-    )
+    quota = models.IntegerField(null=True, default=None)
 
     @property
     def _date(self):
@@ -121,6 +124,7 @@ class Ballot(models.Model):
     class Meta:
         ordering = ["date", "org", "constituency"]
 
+
 class Candidate(models.Model):
     """
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
@@ -130,7 +134,7 @@ class Candidate(models.Model):
     In practice, candidates should _not_ be able to participate twice in a given root/parent election
     """
 
-    _id = models.IntegerField(name="id", primary_key=True)
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=32)
     party_id = models.CharField(max_length=32)
     party_name = models.CharField(max_length=32)
@@ -155,9 +159,7 @@ class Stage(models.Model):
     User-generated Stage counts wrapper; this is the primary tracking element for count tracking.
     """
 
-    _id = models.UUIDField(
-        primary_key=True, default=uuidv6, editable=False, unique=True
-    )
+    id = models.UUIDField(primary_key=True, default=uuidv6, editable=False, unique=True)
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="author")
     validated_by = models.ForeignKey(
         to=User,
@@ -184,15 +186,12 @@ class Stage(models.Model):
         return f"{self.ballot.id}-{self.count_stage} @ {self.author}"
 
 
-
 class StageCell(models.Model):
     """
     Representation of a single candidate/stage/count entry
     """
 
-    _id = models.UUIDField(
-        primary_key=True, default=uuidv6, editable=False, unique=True
-    )
+    id = models.UUIDField(primary_key=True, default=uuidv6, editable=False, unique=True)
     stage = models.ForeignKey(to=Stage, on_delete=models.CASCADE)
     candidate = models.ForeignKey(to=Candidate, on_delete=models.CASCADE)
     ## Counts have to be floats for n>1 stages due to fractional transfers in STV

@@ -40,7 +40,6 @@ class Command(BaseCommand):
         if "ballots" in data:
             ballots = []
             for ballot_data in data["ballots"]:
-
                 ballot, created = Ballot.objects.get_or_create(
                     id=ballot_data["ballot_paper_id"], election=election
                 )
@@ -52,46 +51,50 @@ class Command(BaseCommand):
                 ballot_desc = parse_election_id(ballot.id)
 
                 if ballot_desc["constituency"] in constituency_fixes:
-                    constituency_string = constituency_fixes[ballot_desc["constituency"]]
+                    constituency_string = constituency_fixes[
+                        ballot_desc["constituency"]
+                    ]
                 else:
                     constituency_string = ballot_desc["constituency"]
 
                 count_data = get_elections_ni_constituency_data(
                     year=ballot_desc["date"].year,
                     constituency=constituency_string,
-                    filename = 'Count'
+                    filename="Count",
                 )
                 transfer_data = get_elections_ni_constituency_data(
                     year=ballot_desc["date"].year,
                     constituency=constituency_string,
-                    filename='NonTransferable'
+                    filename="NonTransferable",
                 )
 
                 constituency_data = get_elections_ni_constituency_data(
                     year=ballot_desc["date"].year,
                     constituency=constituency_string,
-                    filename='ConstituencyCount'
+                    filename="ConstituencyCount",
                 )
 
                 stage = None
                 stage_number = 0
                 stage_cells = []
-                transfers = {int(s['Count_Number']):float(s['Non_Transferable'])
-                             for s in transfer_data
-                             if str(s['Count_Number']).isdigit()}
+                transfers = {
+                    int(s["Count_Number"]): float(s["Non_Transferable"])
+                    for s in transfer_data
+                    if str(s["Count_Number"]).isdigit()
+                }
 
                 constituency_counts = next(constituency_data)
 
-                ballot.quota = constituency_counts['Quota']
+                ballot.quota = constituency_counts["Quota"]
 
                 ballot.save()
 
-                self.stderr.write(f'Got {transfers}')
+                self.stderr.write(f"Got {transfers}")
                 counted_stages = []
                 for count_row in count_data:
                     try:
                         if (
-                                new_stage := int(count_row["Count_Number"])
+                            new_stage := int(count_row["Count_Number"])
                         ) != stage_number:
                             counted_stages.append(
                                 stage_number
@@ -102,13 +105,12 @@ class Command(BaseCommand):
                                 ballot=ballot,
                                 author=User.objects.get(username="admin"),
                                 validated_by=User.objects.get(username="admin"),
-                                non_transferable=transfers.get(new_stage,0.0)
-
+                                non_transferable=transfers.get(new_stage, 0.0),
                             )
 
                         count = float(count_row["Total_Votes"])
                         if not Candidate.objects.filter(
-                                id=int(count_row["Candidate_Id"])
+                            id=int(count_row["Candidate_Id"])
                         ).exists():
                             candidate_name = " ".join(
                                 [count_row["Firstname"], count_row["Surname"]]
@@ -121,7 +123,9 @@ class Command(BaseCommand):
                                             a=c.name.lower(), b=candidate_name.lower()
                                         ).ratio(),
                                     )
-                                    for c in Candidate.objects.filter(standing__in=[ballot])
+                                    for c in Candidate.objects.filter(
+                                        standing__in=[ballot]
+                                    )
                                 ],
                                 key=itemgetter(1),
                             )[-1]

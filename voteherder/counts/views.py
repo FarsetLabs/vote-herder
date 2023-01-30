@@ -51,22 +51,24 @@ class ElectionViewSet(viewsets.ReadOnlyModelViewSet):
     API endpoint that allows elections to be viewed or edited.
     """
 
-    lookup_field = "id"
+    # lookup_field = "id"
     lookup_value_regex = "[a-z0-9.\-_]+"
     queryset = Election.objects.all().order_by("-date")
     serializer_class = ElectionSerializer
     permission_classes = [permissions.AllowAny]
+
 
 class BallotViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows elections to be viewed or edited.
     """
 
-    lookup_field = "id"
+    # lookup_field = "id"
     lookup_value_regex = "[a-z0-9.\-_]+"
     queryset = Ballot.objects.all().order_by("-date")
     serializer_class = BallotSerializer
     permission_classes = [permissions.AllowAny]
+
 
 class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -105,6 +107,7 @@ class ElectionListView(ListView):
         context["title"] = "Elections"
         return context
 
+
 class BallotListView(ListView):
     model = Ballot
     template_name = "table_view.html"
@@ -113,6 +116,7 @@ class BallotListView(ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Ballots"
         return context
+
 
 class CandidateListView(ListView):
     model = Candidate
@@ -135,6 +139,7 @@ class ElectionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["ballots"] = Ballot.objects.filter(parent=self.object)
         return context
+
 
 class BallotDetailView(DetailView):
     model = Ballot
