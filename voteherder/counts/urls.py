@@ -8,54 +8,23 @@ from drf_yasg import openapi
 
 
 from .views import (
-    ElectionViewSet,
-    CandidateViewSet,
-    StageViewSet,
-    UserViewSet,
-    GroupViewSet,
     ElectionListView,
     ElectionDetailView,
     CandidateListView,
     CandidateDetailView,
-    StageDetailView, BallotViewSet,
+    StageDetailView, 
 )
 
 app_name = "counts"
-
-api_router = routers.DefaultRouter()
-api_router.register(r"users", UserViewSet, "users")
-api_router.register(r"groups", GroupViewSet, "groups")
-api_router.register(r"elections", ElectionViewSet, "elections")
-api_router.register(r"ballots", BallotViewSet, "ballots")
-api_router.register(r"candidates", CandidateViewSet, "candidates")
-api_router.register(r"stages", StageViewSet, "stages")
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="VoteHerder API",
-      default_version='v1',
-      description="VoteHerder API",
-      terms_of_service="https://www.voteherder.org/policies/terms/",
-      contact=openapi.Contact(email="contact@voteherder.org"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
-)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
     path("about/", TemplateView.as_view(template_name="about.html"), name="about"),
-    path("election/", ElectionListView.as_view(), name="election"),
-    path("election/<str:pk>", ElectionDetailView.as_view(), name="election-detail"),
-    path("candidate/", CandidateListView.as_view(), name="election"),
-    path("candidate/<int:pk>", CandidateDetailView.as_view(), name="candidate-detail"),
-    path("stage/<uuid:pk>", StageDetailView.as_view(), name="stage-detail"),
-    path("api/v1/", include(api_router.urls), name="api"),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path("election/", ElectionListView.as_view(), name="election-list"),
+    path("election/<str:pk>", ElectionDetailView.as_view(), name="election-detail-pk"),
+    path("candidate/", CandidateListView.as_view(), name="candidate"),
+    path("candidate/<int:pk>", CandidateDetailView.as_view(), name="candidate-detail-pk"),
+    path("stage/<uuid:pk>", StageDetailView.as_view(), name="stage-detail-pk"),
 ]

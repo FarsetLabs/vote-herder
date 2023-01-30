@@ -64,13 +64,13 @@ class Ballot(models.Model):
     System/Admin defined minimum object model to reference to the democracyclub api's for further augmentation
     """
     _id = models.CharField(
-        name="id", primary_key=True, validators=[election_ids.validate], max_length=32
+        name="id", primary_key=True, validators=[election_ids.validate], max_length=128
     )
     date = ComputedDateField(compute_from="_date")
     org = ComputedCharField(compute_from="_org", max_length=32)
 
     constituency = ComputedCharField(
-        compute_from="_constituency", max_length=32, null=True
+        compute_from="_constituency", max_length=128, null=True
     )
     election = models.ForeignKey(
         to=Election, on_delete=models.CASCADE, default=None, null=True
