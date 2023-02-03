@@ -9,7 +9,7 @@ packages = [{include = "vote_herder"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "^4.1.5"
+Django = "^4.1.6"
 djangorestframework = "^3.14.0"
 drf-yasg = "^1.21.4"
 uk-election-ids = "^0.6.1"
