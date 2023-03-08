@@ -37,6 +37,7 @@ def parse_election_id(election_id, slug=False):
     else:
         raise ValueError(f"Could not parse {election_id} as an election id slug")
 
+
 def get_elections_ni_constituency_data(year, constituency, filename):
     """eg http://electionsni.org/2017/constituency/belfast-east/Count.csv
     Streaming solution from https://stackoverflow.com/a/38677650/252556
@@ -49,6 +50,7 @@ def get_elections_ni_constituency_data(year, constituency, filename):
             codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",", quotechar='"'
         )
         yield from reader
+
 
 def get_alternative_person_id(candidate_id: int):
     """Sometimes people change. Maybe"""

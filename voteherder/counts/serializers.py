@@ -16,34 +16,36 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ["name"]
 
 
-class BallotSerializer(serializers.ModelSerializer):
+class BallotSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Ballot
         # Removing the 'url' from below stops the ImproperlyConfigured error
-        fields = ["id","date", "org", "constituency", "election"]
-        read_only_fields = ["url"]
+        fields = ["id", "date", "org", "constituency", "url", "election"]
         depth = 2
 
-class ElectionSerializer(serializers.ModelSerializer):
+
+class ElectionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Election
         # Removing the 'url' from below stops the ImproperlyConfigured error
-        fields = ["id","date", "org", "ballot_set"]
-        depth = 1
+        fields = ["id", "url", "date", "org", "ballot_set"]
+
 
 class CandidateSerializer(serializers.ModelSerializer):
     democracy_club_url = serializers.ReadOnlyField()
+
     class Meta:
         model = Candidate
-        fields = ["id", "name", "party_name","democracy_club_url"]
+        fields = ["id", "name", "party_name", "democracy_club_url"]
+
 
 class StageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Stage
         fields = ["ballot", "count_stage", "author", "stagecell_set"]
 
+
 class StageCellSerializer(serializers.ModelSerializer):
     class Meta:
         model = StageCell
-        fields = ["candidate_id","count"]
+        fields = ["candidate_id", "count"]

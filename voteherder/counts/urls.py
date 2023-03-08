@@ -17,30 +17,30 @@ from .views import (
     ElectionDetailView,
     CandidateListView,
     CandidateDetailView,
-    StageDetailView, BallotViewSet,
+    StageDetailView,
+    BallotViewSet,
 )
 
-app_name = "counts"
 
-api_router = routers.DefaultRouter()
-api_router.register(r"users", UserViewSet, "users")
-api_router.register(r"groups", GroupViewSet, "groups")
-api_router.register(r"elections", ElectionViewSet, "elections")
-api_router.register(r"ballots", BallotViewSet, "ballots")
-api_router.register(r"candidates", CandidateViewSet, "candidates")
-api_router.register(r"stages", StageViewSet, "stages")
+api_router = routers.SimpleRouter()
+api_router.register(r"users", UserViewSet)
+api_router.register(r"groups", GroupViewSet)
+api_router.register(r"election", ElectionViewSet)
+api_router.register(r"ballot", BallotViewSet)
+api_router.register(r"candidate", CandidateViewSet)
+api_router.register(r"stage", StageViewSet)
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="VoteHerder API",
-      default_version='v1',
-      description="VoteHerder API",
-      terms_of_service="https://www.voteherder.org/policies/terms/",
-      contact=openapi.Contact(email="contact@voteherder.org"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
+    openapi.Info(
+        title="VoteHerder API",
+        default_version="v1",
+        description="VoteHerder API",
+        terms_of_service="https://www.voteherder.org/policies/terms/",
+        contact=openapi.Contact(email="contact@voteherder.org"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 # Wire up our API using automatic URL routing.
@@ -53,9 +53,19 @@ urlpatterns = [
     path("candidate/", CandidateListView.as_view(), name="election"),
     path("candidate/<int:pk>", CandidateDetailView.as_view(), name="candidate-detail"),
     path("stage/<uuid:pk>", StageDetailView.as_view(), name="stage-detail"),
-    path("api/v1/", include(api_router.urls), name="api"),
+    path("api/v1/", include(api_router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+    ),
 ]
