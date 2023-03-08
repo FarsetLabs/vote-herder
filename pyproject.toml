@@ -5,7 +5,7 @@ description = "Slightly Easier than Herding Cats."
 authors = ["Your Name <you@example.com>"]
 license = "Creative Commons Zero v1.0 Universal"
 readme = "README.md"
-packages = [{include = "vote_herder"}]
+packages = [{include = "voteherder"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
