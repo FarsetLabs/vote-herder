@@ -53,6 +53,7 @@ For a lazy copy-paste job, here you go;
 ```
 python voteherder/manage.py populate_nia_count nia.2017-03-02
 python voteherder/manage.py populate_nia_count nia.2016-05-05
+python voteherder/manage.py populate_nia_count nia.2022-05-05
 ```
 
 for a lazyer copy-paste job, here you go(or if you need to reset everything after running `rm voteherder/db.sqlite3`):
