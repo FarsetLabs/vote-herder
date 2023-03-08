@@ -47,6 +47,7 @@ For a lazy copy-paste job, here you go;
 ```
 python voteherder/manage.py populate_nia_count nia.2017-03-02
 python voteherder/manage.py populate_nia_count nia.2016-05-05
+python voteherder/manage.py populate_nia_count nia.2022-05-05
 ```
 
 **2011 doesn't exist, see [here](https://twitter.com/Bolster/status/1516117518984826881)**
