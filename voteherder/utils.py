@@ -8,6 +8,16 @@ from contextlib import closing
 import requests
 from uk_election_ids import election_ids
 
+def print_url_pattern_names(patterns):
+    """Print a list of urlpattern and their names"""
+    # https://stackoverflow.com/questions/32016973/add-a-hyperlink-in-django-rest-framework-to-a-modelviewset
+    for pat in patterns:
+        if pat.__class__.__name__ == 'URLResolver':      # load patterns from this URLResolver
+            print_url_pattern_names(pat.url_patterns)
+        elif pat.__class__.__name__ == 'URLPattern':     # load name from this URLPattern
+            if pat.name is not None:
+                print('[API-URL] {:>50} -> {}'.format(pat.name, pat.pattern))
+
 
 def parse_election_id(election_id, slug=False):
     """

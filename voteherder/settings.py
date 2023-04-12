@@ -49,9 +49,8 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_extensions",
     "drf_yasg",
-    # local apps
-    "demo",
-    "counts",
+    # Us
+    "voteherder",
 ]
 
 MIDDLEWARE = [

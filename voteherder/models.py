@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from uk_election_ids import election_ids
 
-from .utils import uuidv6, parse_election_id
+from voteherder.utils import uuidv6, parse_election_id
 
 
 class Election(models.Model):
@@ -20,6 +20,7 @@ class Election(models.Model):
     )
     date = ComputedDateField(compute_from="_date")
     org = ComputedCharField(compute_from="_org", max_length=32)
+    extra_details_url = models.URLField()
 
     @property
     def _date(self):

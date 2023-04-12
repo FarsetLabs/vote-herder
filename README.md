@@ -59,7 +59,7 @@ for a lazyer copy-paste job, here you go(or if you need to reset everything afte
 
 ```
 poetry run python manage.py flush
-poetry run python manage.py makemigrations counts
+poetry run python manage.py makemigrations voteherder
 poetry run python manage.py migrate    
 poetry run python manage.py createsuperuser --username admin --email admin@voteherder.org
 poetry run python manage.py populate_nia_count nia.2017-03-02
