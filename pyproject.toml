@@ -5,11 +5,11 @@ description = "Slightly Easier than Herding Cats."
 authors = ["Your Name <you@example.com>"]
 license = "Creative Commons Zero v1.0 Universal"
 readme = "README.md"
-packages = [{include = "vote_herder"}]
+packages = [{include = "voteherder"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "^4.1.5"
+Django = "^4.0.10"
 djangorestframework = "^3.14.0"
 drf-yasg = "^1.21.4"
 uk-election-ids = "^0.6.1"
@@ -24,6 +24,11 @@ django-bootstrap4 = "^22.3"
 django-ninja = "^0.20.0"
 jupyter = "^1.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+djangorestframework-types = "^0.8.0"
+django-stubs = "^1.14.0"
+black = "^22.12.0"
 
 [build-system]
 requires = ["poetry-core"]

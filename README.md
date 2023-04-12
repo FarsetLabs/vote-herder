@@ -16,6 +16,12 @@ Slightly Easier than Herding Cats.
 
 ## Getting started
 
+### Python setup
+1. somehow get a python base version, pyenv can be an option
+2. install python poetry
+3. run `poetry install`
+4. run `poetry shell` # to get your shell into the correct virtualenv
+
 ### Clean migrations
 
 ``` 
@@ -47,6 +53,17 @@ For a lazy copy-paste job, here you go;
 ```
 python voteherder/manage.py populate_nia_count nia.2017-03-02
 python voteherder/manage.py populate_nia_count nia.2016-05-05
+```
+
+for a lazyer copy-paste job, here you go(or if you need to reset everything after running `rm voteherder/db.sqlite3`):
+
+```
+poetry run python voteherder/manage.py makemigrations counts
+poetry run python voteherder/manage.py migrate    
+poetry run python voteherder/manage.py createsuperuser --username admin --email admin@voteherder.org
+poetry run python voteherder/manage.py populate_nia_count nia.2017-03-02
+poetry run python voteherder/manage.py populate_nia_count nia.2016-05-05
+python voteherder/manage.py populate_nia_count nia.2022-05-05
 python voteherder/manage.py populate_nia_count nia.2022-05-05
 ```
 
