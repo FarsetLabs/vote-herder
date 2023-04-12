@@ -133,3 +133,4 @@ dmypy.json
 # Used for requests_cache
 http_cache.sqlite
 
+/voteherder/counts/migrations/
