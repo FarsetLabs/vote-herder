@@ -84,8 +84,6 @@ class Command(BaseCommand):
                 }
 
                 constituency_counts = next(constituency_data)
-
-
                 #FIXME https://github.com/FarsetLabs/vote-herder/issues/24
                 # ~Need either to downcase the whole header in `get_elections_ni_constituency_data`~
                 # OR try/catch this with 'quota'
@@ -94,7 +92,6 @@ class Command(BaseCommand):
                     ballot.quota = constituency_counts['Quota']
                 except KeyError as e:
                     ballot.quota = constituency_counts['quota']
-
                 ballot.save()
 
                 self.stderr.write(f"Got {transfers}")

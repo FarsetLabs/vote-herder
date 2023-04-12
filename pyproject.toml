@@ -22,6 +22,7 @@ django-extensions = "^3.2.1"
 django-computed-property = "^0.3.0"
 django-bootstrap4 = "^22.3"
 django-ninja = "^0.20.0"
+jupyter = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
