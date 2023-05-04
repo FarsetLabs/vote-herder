@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from .models import Election, Candidate, Stage, StageCell
-from .utils import (
+from voteherder.utils import (
     parse_election_id,
     get_elections_ni_constituency_count_data,
     is_close_enough,

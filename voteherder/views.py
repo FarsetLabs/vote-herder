@@ -4,12 +4,9 @@ from django.contrib.auth.models import User, Group
 from django.views.generic import ListView, DetailView
 from rest_framework import permissions
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
 
-
-from .models import Election, Candidate, Stage, StageCell, Ballot
-from .serializers import (
+from voteherder.models import Election, Candidate, Stage, Ballot, StageCell
+from voteherder.serializers import (
     UserSerializer,
     GroupSerializer,
     ElectionSerializer,
@@ -78,11 +75,6 @@ class CandidateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Candidate.objects.all().order_by("name")
     serializer_class = CandidateSerializer
     permission_classes = [permissions.AllowAny]
-
-    @action(detail=True)
-    def get(self, request, *args, **kwargs):
-        candidate = self.get_object()
-        return Response(candidate)
 
 
 class StageViewSet(viewsets.ModelViewSet):

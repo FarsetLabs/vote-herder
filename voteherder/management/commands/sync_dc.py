@@ -1,4 +1,4 @@
-from counts.models import Election, Ballot
+from counts import Election, Ballot
 from django.core.management.base import BaseCommand, CommandError
 from uk_election_ids.election_ids import validate
 

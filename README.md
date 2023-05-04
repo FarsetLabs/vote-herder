@@ -25,13 +25,13 @@ Slightly Easier than Herding Cats.
 ### Clean migrations
 
 ``` 
-python voteherder/manage.py makemigrations counts
-python voteherder/manage.py migrate    
+python manage.py makemigrations counts
+python manage.py migrate    
 ```
 
 ### Create a local superadmin
 
-`python voteherder/manage.py createsuperuser --username admin --email admin@voteherder.org`
+`python manage.py createsuperuser --username admin --email admin@voteherder.org`
 
 ### Previous Northern Ireland Elections covered by [ElectionsNI](http://www.electionsni.org/data/)
 
@@ -46,32 +46,32 @@ count data. There are currently two 'matching' heuristics in place for 'historic
 
 ** THIS WILL DROP ALL BALLOTS/STAGE/STAGECELL DATA FOR THE SPECIFIED CONTEST **
 
-`python voteherder/manage.py populate_nia_count nia.2017-03-02`
+`python manage.py populate_nia_count nia.2017-03-02`
 
 For a lazy copy-paste job, here you go;
 
 ```
-python voteherder/manage.py populate_nia_count nia.2017-03-02
-python voteherder/manage.py populate_nia_count nia.2016-05-05
+python manage.py populate_nia_count nia.2017-03-02
+python manage.py populate_nia_count nia.2016-05-05
 ```
 
-for a lazyer copy-paste job, here you go(or if you need to reset everything after running `rm voteherder/db.sqlite3`):
+for a lazyer copy-paste job, here you go(or if you need to reset everything after running `rm db.sqlite3`):
 
 ```
-poetry run python voteherder/manage.py makemigrations counts
-poetry run python voteherder/manage.py migrate    
-poetry run python voteherder/manage.py createsuperuser --username admin --email admin@voteherder.org
-poetry run python voteherder/manage.py populate_nia_count nia.2017-03-02
-poetry run python voteherder/manage.py populate_nia_count nia.2016-05-05
-python voteherder/manage.py populate_nia_count nia.2022-05-05
-python voteherder/manage.py populate_nia_count nia.2022-05-05
+poetry run python manage.py flush
+poetry run python manage.py makemigrations voteherder
+poetry run python manage.py migrate    
+poetry run python manage.py createsuperuser --username admin --email admin@voteherder.org
+poetry run python manage.py populate_nia_count nia.2017-03-02
+poetry run python manage.py populate_nia_count nia.2016-05-05
+poetry run python manage.py populate_nia_count nia.2022-05-05
 ```
 
 **2011 doesn't exist, see [here](https://twitter.com/Bolster/status/1516117518984826881)**
 
 ### Actually running a service
 
-```python voteherder/manage.py runserver```
+```python manage.py runserver```
 
 Then go [here](http://127.0.0.1:8000/api/v1/elections/) to see a list of imported ballots, or [here](http://127.0.0.1:8000/swagger/) to drop into the swagger ui
 

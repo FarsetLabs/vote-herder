@@ -1,8 +1,8 @@
 import difflib
 from operator import itemgetter
 
-from counts.models import Election, Ballot, Candidate, Stage, StageCell
-from counts.utils import (
+from voteherder.models import Election, Ballot, Candidate, Stage, StageCell
+from voteherder.utils import (
     parse_election_id,
     get_elections_ni_constituency_data,
     get_alternative_person_id,

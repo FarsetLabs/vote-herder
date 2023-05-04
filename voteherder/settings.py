@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -49,9 +49,8 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_extensions",
     "drf_yasg",
-    # local apps
-    "demo",
-    "counts",
+    # Us
+    "voteherder",
 ]
 
 MIDDLEWARE = [
